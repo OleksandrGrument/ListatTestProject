@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">listat-test-project</string>
+    
+    <string name="main_activity_thread_number">Thread number </string>
+    <string name="main_activity_prime_number">prime number generated: </string>
+    
+</resources>
