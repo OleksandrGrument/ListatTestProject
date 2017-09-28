@@ -1,25 +1,21 @@
 package com.grument.listat_test_project.util;
 
-import android.util.Log;
-
+import com.annimon.stream.IntStream;
 import com.grument.listat_test_project.data_objects.IntervalInfo;
 import com.grument.listat_test_project.data_objects.CalculationResult;
 
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.concurrent.LinkedBlockingQueue;
+
 
 public class CalculationThread extends Thread {
 
-    private final static String CALCULATION_THREAD_TAG = "CALCULATION_THREAD_TAG";
-
     private ArrayList<IntervalInfo> intervalInfoArrayList;
-    private int number = 2;
-    private Random random = new Random();
-    private QueueThread queueThread;
+    private LinkedBlockingQueue<CalculationResult> queue;
 
-    public CalculationThread(ArrayList<IntervalInfo> intervalInfoList, QueueThread queueThread) {
+    public CalculationThread(ArrayList<IntervalInfo> intervalInfoList, LinkedBlockingQueue<CalculationResult> queue) {
         this.intervalInfoArrayList = intervalInfoList;
-        this.queueThread = queueThread;
+        this.queue = queue;
     }
 
 
@@ -27,21 +23,23 @@ public class CalculationThread extends Thread {
     public void run() {
 
         for (IntervalInfo intervalInfo : intervalInfoArrayList) {
-            try {
 
-                int delayTime = (random.nextInt(intervalInfo.getHighInterval() - intervalInfo.getLowInterval() + 1) + intervalInfo.getLowInterval());
-                sleep(delayTime);
+            int primeNumbersSum =
+                    IntStream.range(intervalInfo.getLowInterval(), intervalInfo.getHighInterval())
+                            .filter(CalculationThread::isPrimeNumber)
+                            .sum();
 
-                int somePrimeNumberCalculation = number + random.nextInt(99999);
-                CalculationResult calculationResult = new CalculationResult(intervalInfo.getId(), somePrimeNumberCalculation);
+            CalculationResult calculationResult = new CalculationResult(intervalInfo.getId(), primeNumbersSum);
 
-                queueThread.putInQueue(calculationResult);
+            queue.add(calculationResult);
 
-            } catch (InterruptedException e) {
-                // Handle Error
-                Log.i(CALCULATION_THREAD_TAG, "Error:" + e);
-            }
         }
+    }
+
+    private static boolean isPrimeNumber(int number) {
+        return number > 1 &&
+                IntStream.rangeClosed(2, (int) Math.sqrt(number))
+                        .noneMatch(i -> number % i == 0);
     }
 
 }

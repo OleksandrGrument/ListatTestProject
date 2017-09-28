@@ -1,35 +1,31 @@
 package com.grument.listat_test_project.view.fragment;
 
-import android.content.res.AssetManager;
+
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.grument.listat_test_project.data_objects.CalculationResult;
 import com.grument.listat_test_project.data_objects.IntervalInfo;
-import com.grument.listat_test_project.util.IntervalXMLHandler;
 import com.grument.listat_test_project.R;
 import com.grument.listat_test_project.util.CalculationThread;
+import com.grument.listat_test_project.util.IntervalXmlParseTask;
 import com.grument.listat_test_project.util.QueueThread;
 import com.grument.listat_test_project.util.StoringThread;
 import com.grument.listat_test_project.view.adapter.RecycleViewCalculationAdapter;
 
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
-
-import java.io.InputStream;
 import java.util.ArrayList;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class CalculationViewFragment extends Fragment {
 
-    public final static String CALCULATION_FRAGMENT_TAG = "CALCULATION_FRAGMENT_TAG";
+    public final static String CALCULATION_FRAGMENT_TAG = "CALC_FRAGMENT_TAG";
 
     public CalculationViewFragment() {
         this.setRetainInstance(true);
@@ -70,44 +66,58 @@ public class CalculationViewFragment extends Fragment {
 
     private void parseXML() {
 
-        AssetManager assetManager = getActivity().getBaseContext().getAssets();
         try {
 
-            InputStream inputStream = assetManager.open("stream_intervals.xml");
-            SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-            SAXParser saxParser = saxParserFactory.newSAXParser();
-            XMLReader xmlReader = saxParser.getXMLReader();
+            ArrayList<IntervalInfo> intervalInfoList = new ArrayList<>();
 
-            IntervalXMLHandler myXMLHandler = new IntervalXMLHandler();
-            xmlReader.setContentHandler(myXMLHandler);
-            InputSource inputSource = new InputSource(inputStream);
-            xmlReader.parse(inputSource);
-            inputStream.close();
+            new IntervalXmlParseTask(getActivity(), intervalInfoList, new IntervalXmlParseTask.IntervalXmlParseTaskCallback() {
 
-            ArrayList<IntervalInfo> intervalInfoList = myXMLHandler.getIntervalInfos();
+                @Override
+                public void onXmlParseStart() {
+                    Log.i(CALCULATION_FRAGMENT_TAG, "onXmlParseStart");
+                }
+
+                @Override
+                public void onXmlParseEnd() {
+
+                    Log.i(CALCULATION_FRAGMENT_TAG, "onXmlParseEnd");
+
+                    SparseArray<ArrayList<IntervalInfo>> sortedByIdIntervals = new SparseArray<>();
 
 
-            ArrayList<IntervalInfo> intervalsForFirstThread = new ArrayList<>();
-            ArrayList<IntervalInfo> intervalsForSecondThread = new ArrayList<>();
+                    for (IntervalInfo intervalInfo : intervalInfoList) {
 
-            for (IntervalInfo intervalInfo : intervalInfoList) {
-                if (intervalInfo.getId() == 1) intervalsForFirstThread.add(intervalInfo);
-                else intervalsForSecondThread.add(intervalInfo);
-            }
+                        int id = intervalInfo.getId();
 
-            QueueThread queueThread = new QueueThread();
-            queueThread.start();
+                        ArrayList<IntervalInfo> intervalsForSpecificThread = sortedByIdIntervals.get(id, null);
 
-            StoringThread storingThread = new StoringThread(this);
-            storingThread.connect(queueThread.getPipedOutputStream());
-            storingThread.start();
+                        if (intervalsForSpecificThread != null) {
+                            intervalsForSpecificThread.add(intervalInfo);
+                        } else {
+                            intervalsForSpecificThread = new ArrayList<>();
+                            intervalsForSpecificThread.add(intervalInfo);
+                            sortedByIdIntervals.put(id, intervalsForSpecificThread);
+                        }
+                    }
 
-            CalculationThread firstCalculationThread = new CalculationThread(intervalsForFirstThread, queueThread);
-            firstCalculationThread.start();
+                    LinkedBlockingQueue<CalculationResult> queue = new LinkedBlockingQueue<>();
 
-            CalculationThread secondCalculationThread = new CalculationThread(intervalsForSecondThread, queueThread);
-            secondCalculationThread.start();
+                    StoringThread storingThread = new StoringThread(CalculationViewFragment.this);
+                    storingThread.start();
 
+
+                    new QueueThread(queue ,storingThread).start();
+
+
+                    for (int i = 0; i < sortedByIdIntervals.size(); i++) {
+
+                        new CalculationThread(sortedByIdIntervals.valueAt(i), queue).start();
+
+                    }
+
+
+                }
+            }).execute();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -132,7 +142,7 @@ public class CalculationViewFragment extends Fragment {
         return isActive;
     }
 
-    public RecyclerView getRecyclerView(){
+    public RecyclerView getRecyclerView() {
         return mRecyclerView;
     }
 

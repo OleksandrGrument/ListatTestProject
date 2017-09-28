@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
     <intervals>
         <interval>
@@ -92,12 +92,62 @@
             <high>888</high>
         </interval>
         <interval>
-            <id>1</id>
+            <id>3</id>
             <low>100</low>
             <high>200</high>
         </interval>
         <interval>
-            <id>2</id>
+            <id>4</id>
+            <low>500</low>
+            <high>888</high>
+        </interval>
+        <interval>
+            <id>5</id>
+            <low>500</low>
+            <high>888</high>
+        </interval>
+        <interval>
+            <id>3</id>
+            <low>100</low>
+            <high>200</high>
+        </interval>
+        <interval>
+            <id>4</id>
+            <low>500</low>
+            <high>888</high>
+        </interval>
+        <interval>
+            <id>5</id>
+            <low>500</low>
+            <high>888</high>
+        </interval>
+        <interval>
+            <id>3</id>
+            <low>100</low>
+            <high>200</high>
+        </interval>
+        <interval>
+            <id>4</id>
+            <low>500</low>
+            <high>888</high>
+        </interval>
+        <interval>
+            <id>5</id>
+            <low>500</low>
+            <high>888</high>
+        </interval>
+        <interval>
+            <id>3</id>
+            <low>100</low>
+            <high>200</high>
+        </interval>
+        <interval>
+            <id>4</id>
+            <low>500</low>
+            <high>888</high>
+        </interval>
+        <interval>
+            <id>5</id>
             <low>500</low>
             <high>888</high>
         </interval>

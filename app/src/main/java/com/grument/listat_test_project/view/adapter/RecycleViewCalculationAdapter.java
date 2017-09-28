@@ -3,6 +3,7 @@ package com.grument.listat_test_project.view.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +19,7 @@ public class RecycleViewCalculationAdapter extends RecyclerView.Adapter<RecycleV
 
     private List<CalculationResult> calculationResults;
 
-    private String threadNumber;
-    private String primeNumbersGenerated;
+    private String threadNumber, primeNumbersGenerated;
 
 
     public RecycleViewCalculationAdapter(ArrayList<CalculationResult> calculationResults, Context context) {
@@ -39,18 +39,16 @@ public class RecycleViewCalculationAdapter extends RecyclerView.Adapter<RecycleV
 
         CalculationResult calculationResult = calculationResults.get(position);
 
-
         String threadInfo = threadNumber + calculationResult.getThreadNumber();
         String primeNumberInfo = primeNumbersGenerated + calculationResult.getPrimeNumberGenerated();
-
-        if (calculationResult.getThreadNumber() == 2) {
-            view.streamNumberTextView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
-            view.primeNumberSumTextView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
-        }
 
         view.streamNumberTextView.setText(threadInfo);
         view.primeNumberSumTextView.setText(primeNumberInfo);
 
+        if (calculationResult.getThreadNumber() % 2 == 0) {
+            view.streamNumberTextView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+            view.primeNumberSumTextView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+        }
     }
 
     @Override
@@ -58,13 +56,9 @@ public class RecycleViewCalculationAdapter extends RecyclerView.Adapter<RecycleV
         return calculationResults.size();
     }
 
-    public void swap(ArrayList<CalculationResult> list) {
-        if (calculationResults != null) {
-            calculationResults.clear();
-            calculationResults.addAll(list);
-        } else {
-            calculationResults = list;
-        }
+    public void swap(CalculationResult calculationResult) {
+        calculationResults.add(calculationResult);
+        notifyItemInserted(getItemCount());
         notifyDataSetChanged();
     }
 
@@ -77,6 +71,7 @@ public class RecycleViewCalculationAdapter extends RecyclerView.Adapter<RecycleV
 
         ViewHolder(View view) {
             super(view);
+            this.setIsRecyclable(false);
             recyclerView = (RecyclerView) view.findViewById(R.id.fragment_calculation_recycler_view);
             streamNumberTextView = (TextView) view.findViewById(R.id.stream_number);
             primeNumberSumTextView = (TextView) view.findViewById(R.id.prime_number_sum);
