@@ -23,4 +23,5 @@ Example of input xml file: 1 100 200 2 500 888 ....
 Parsing xml should be performed without any(Android internal or 3rd party) library. field used as thread id for displaying.
 
 Even threads output information on the right side, odd threads - on the left side as shown in the figure
-<img  src="https://lh3.googleusercontent.com/yJHqTIMNakTQT9cPUQBfFe0RjDPN9sahqW52pQaEyu4crD3Ciu-C65_wDmZCs0yBUguOVUIvOhOfJKvoiTgaCkTmkl4OeICW5Z-8afhtPrGXCAYGW2OSDsKUcnG5eNwX9_uyUGwD16LGTv0bRC1muDAry7hwhjGX8E-pT1aQlKB6uUgQ-sMLQw4NGBu0y6AP7Hv2k7bm-YagBXCisR9YRkaOBizIb4IpdTb_9HsgDG0nyekFJNrZMza7Lw9RTSfJrPTJJys8vjvlipGEyc5dLwsXVV5Mh_cejlzykkIcIafoUw7-r8RqYXxPJjbzaGUAc6GKCXoZ2KRrJL3KSpJ20lH4NEfrWRtP_rTBl6KuivDSzUsrEAJ9RkxUaJn2K-edQmsAQ4tlU5saH_2PR6qLhHJ2_CxciM0kL6MkOn8Ni62a50HErc2YxnCa_-NAS41IYykn_Vy7yugafji21iLxorEKZpN1ut5wgSHszWVWCPPDnVxK_G6Wq6SFyp-Bdpb5oEcSWynUDcb2yQYwJhtnzE0WKUwG3XQUJ99bAghEfxpWifAWZSe6TaczeSKuFgd8bZhkSWRrB9YrRlPitl6JXCeL8PX9NxvS5jlhdyVdpA=w320-h568-no" style=" width:100px ; height:100px " />
+
+<a data-flickr-embed="true"  href="https://www.flickr.com/photos/152012252@N06/36818731524/in/album-72157685903489972/" title="ListatTestStructure"><img src="https://farm5.staticflickr.com/4510/36818731524_613d1b5967_z.jpg" width="320" height="568" alt="ListatTestStructure"></a>
